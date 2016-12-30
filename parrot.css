@@ -1,0 +1,23 @@
+body {
+  overflow: hidden;
+  font-size: 12px;
+  font-family: sans-serif;
+}
+#ctl {
+  position: absolute;
+  background-color: #fff;
+}
+tr td:first-child {
+  text-align: right;
+  font-weight: bold;
+}
+#parrot {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.pixelated {
+  image-rendering: pixelated;
+}
