@@ -38,6 +38,8 @@
     if (timer) clearInterval(timer);
     timer = setInterval(anim, 60000.0 / (bpm * nframes));
 
+    itype.value = type;
+
     if (ispixel) {
       ipix.checked = true;
       dparrot.className = 'pixelated';
