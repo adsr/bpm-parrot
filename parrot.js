@@ -2,7 +2,7 @@
   var type = 'parrot';
   var nframes = 10;
   var curframe = 0;
-  var bpm = 120.0;
+  var bpm = 114.9;
   var ispixel = 1;
   var isrepeat = 1;
   var timer = null;
