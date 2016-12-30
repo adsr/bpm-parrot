@@ -20,7 +20,8 @@
   var anim = function() {
     curframe = (curframe + 1) % nframes;
     curf = curframe;
-    if (curf < 10) curf = '0' + curframe;
+    if (curf < 10) curf = '00' + curframe;
+    else if (curf < 100) curf = '0' + curframe;
     dparrot.style.backgroundImage = "url('parrots/" + type + ".gif." + curf + ".png')";
   };
   var fromhash = function(h) {
