@@ -184,8 +184,8 @@
     o.value = p;
     itype.add(o);
   }
-  if (location.hash && location.hash.length >= 9) {
-    fromhash(location.hash);
+  if (location.hash && location.hash.length >= 10) {
+    fromhash(location.hash.substring(1));
   }
   set();
 })();
