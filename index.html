@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+<style>
+body {
+  overflow: hidden;
+}
+div {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.pixelated {
+  image-rendering: pixelated;
+}
+p {
+  position: absolute;
+  background-color: #fff;
+}
+</style>
+<body>
+<p>
+  <b>bpm parrot</b><br>
+  tap tempo: space<br>
+  reset anim: f<br>
+  reset tap tempo: r<br>
+  <input type="text" id="t" placeholder="bpm"><br>
+  <select id="s"></select><br>
+  <label><input type="checkbox" id="x">pixelate</label><br>
+  <label><input type="checkbox" id="c">repeat</label><br>
+</p>
+<div id="p"/>
+<script>
+(function() {
+  var types = {
+    'parrot': 10,
+    'aussiecongaparrot': 10,
+    'aussieparrot': 10,
+    'aussiereversecongaparrot': 10,
+    'blondesassyparrot': 18,
+    'bluecluesparrot': 9,
+    'boredparrot': 10,
+    'chillparrot': 18,
+    'christmasparrot': 10,
+    'coffeeparrot': 10,
+    'confusedparrot': 26,
+    'congaparrot': 10,
+    'congapartyparrot': 90,
+    'darkbeerparrot': 10,
+    'dealwithitparrot': 26,
+    'dreidelparrot': 10,
+    'driedelparrot': 10,
+    'driedelparrot2': 10,
+    'explodyparrot': 216,
+    'fastparrot': 10,
+    'fieriparrot': 10,
+    'fiestaparrot': 10,
+    'gentlemanparrot': 10,
+    'gothparrot': 10,
+    'hamburgerparrot': 40,
+    'harrypotterparrot': 10,
+    'ice-cream-parrot': 10,
+    'magaritaparrot': 10,
+    'middleparrot': 12,
+    'moonwalkingparrot': 20,
+    'oldtimeyparrot': 10,
+    'oriolesparrot': 10,
+    'parrotbeer': 10,
+    'parrotcop': 10,
+    'parrotdad': 8,
+    'parrotmustache': 10,
+    'parrotsleep': 4,
+    'parrotwave1': 11,
+    'parrotwave2': 11,
+    'parrotwave3': 11,
+    'parrotwave4': 11,
+    'parrotwave5': 11,
+    'parrotwave6': 11,
+    'parrotwave7': 10,
+    'partyparrot': 10,
+    'pizzaparrot': 10,
+    'reversecongaparrot': 10,
+    'rightparrot': 10,
+    'sadparrot': 10,
+    'sassyparrot': 18,
+    'shufflefurtherparrot': 20,
+    'shuffleparrot': 20,
+    'shufflepartyparrot': 120,
+    'slowparrot': 10,
+    'stableparrot': 10,
+    'tripletsparrot': 10,
+    'twinsparrot': 10,
+    'upvotepartyparrot': 10,
+    'witnessprotectionparrot': 10,
+  };
+  var bpm = 120.0;
+  var frames = 10;
+  var type = 'parrot';
+  var div = document.getElementById('p');
+  var txt = document.getElementById('t');
+  var sel = document.getElementById('s');
+  var chk = document.getElementById('c');
+  var pix = document.getElementById('x');
+  var cur = 0;
+  var timer = null;
+  var tap0 = null;
+  var tapc = 0;
+  var anim = function() {
+    cur = (cur + 1) % frames;
+    curf = cur;
+    if (curf < 10) curf = '0' + cur;
+    div.style.backgroundImage = "url('parrots/" + type + ".gif." + curf + ".png')";
+  };
+  var set = function(b) {
+    bpm = b;
+    if (timer) clearInterval(timer);
+    timer = setInterval(anim, 60000.0 / (bpm * frames));
+    txt.value = bpm;
+  };
+  document.onkeypress = function(e) {
+    if (e.srcElement == txt) {
+      return;
+    } else if (e.key == 'r') {
+      tapc = 0;
+    } else if (e.key == 'f') {
+      cur = 0;
+    } else {
+      var now = (new Date()).getTime();
+      if (tapc > 0) {
+        set(Math.ceil((60000.0 * tapc / (now - tap0)) * 10) / 10);
+      } else {
+        tap0 = now;
+      }
+      tapc += 1;
+    }
+  };
+  txt.onchange = function() {
+    tapc = 0;
+    set(parseInt(this.value, 10));
+  };
+  sel.onchange = function() {
+    type = this.value
+    frames = types[type];
+  };
+  for (var p in types) {
+    var o = document.createElement('option');
+    o.text = p;
+    o.value = p;
+    sel.add(o);
+  }
+  chk.onchange = function() {
+    if (div.style.backgroundSize == 'auto') {
+      div.style.backgroundRepeat = 'no-repeat';
+      div.style.backgroundSize = '100% 100%';
+    } else {
+      div.style.backgroundRepeat = 'repeat';
+      div.style.backgroundSize = 'auto';
+    }
+  };
+  pix.onchange = function() {
+    if (div.className == 'pixelated') {
+      div.className = '';
+    } else {
+      div.className = 'pixelated';
+    }
+  };
+  set(bpm);
+})();
+</script>
+</body>
+</html>
