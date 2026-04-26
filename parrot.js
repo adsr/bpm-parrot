@@ -16,9 +16,11 @@
   var ipix = document.getElementById('pixelate');
   var iytid = document.getElementById('ytid');
   var irestart = document.getElementById('restart');
+  var ipause = document.getElementById('pause');
   var istart = document.getElementById('start');
   var ctl = document.getElementById('ctl');
   var ytplayer = null;
+  var ytready = false;
   var anim = function() {
     curframe = (curframe + 1) % nframes;
     curf = curframe;
@@ -66,51 +68,9 @@
     var hash = [type, bpm, ispixel ? 1 : 0, isrepeat ? 1 : 0, ytid].join(',');
     history.pushState(null, null, '#' + hash);
   };
-  document.onkeypress = function(e) {
-    if (e.srcElement == ibpm) {
-      return;
-    } else if (e.key == 'r') {
-      tapc = 0;
-    } else if (e.key == 'f') {
-      curframe = 0;
-    } else {
-      var now = (new Date()).getTime();
-      if (tapc > 0) {
-        bpm = 60000.0 * tapc / (now - tap0);
-        set();
-      } else {
-        tap0 = now;
-      }
-      tapc += 1;
-    }
-  };
-  ibpm.onchange = function() {
-    tapc = 0;
-    bpm = parseFloat(this.value);
-    set();
-  };
-  itype.onchange = function() {
-    type = this.value
-    nframes = types[type];
-    set();
-  };
-  irepeat.onchange = function() {
-    isrepeat = isrepeat ? 0 : 1;
-    set();
-  };
-  ipix.onchange = function() {
-    ispixel = ispixel ? 0 : 1;
-    set();
-  };
-  iytid.onchange = function() {
-    ytid = this.value;
-    if (ytplayer) ytplayer.loadVideoById(ytid);
-    set();
-  };
-  irestart.onclick = function() {
-    if (ytplayer) ytplayer.seekTo(0);
-  };
-  window.onYouTubeIframeAPIReady = function() {
+  var getplayer = function() {
+    if (ytplayer) return ytplayer;
+    if (!ytready) return null;
     ytplayer = new YT.Player('yt', {
       height: '1',
       width: '1',
@@ -121,6 +81,78 @@
         controls: 0
       }
     });
+    return ytplayer;
+  };
+  var init = function() {
+    document.onkeypress = function(e) {
+      if (e.srcElement == ibpm) {
+        return;
+      } else if (e.key == 'r') {
+        tapc = 0;
+      } else if (e.key == 'f') {
+        curframe = 0;
+      } else {
+        var now = (new Date()).getTime();
+        if (tapc > 0) {
+          bpm = 60000.0 * tapc / (now - tap0);
+          set();
+        } else {
+          tap0 = now;
+        }
+        tapc += 1;
+      }
+    };
+    ibpm.onchange = function() {
+      tapc = 0;
+      bpm = parseFloat(this.value);
+      set();
+    };
+    itype.onchange = function() {
+      type = this.value
+      nframes = types[type];
+      set();
+    };
+    irepeat.onchange = function() {
+      isrepeat = isrepeat ? 0 : 1;
+      set();
+    };
+    ipix.onchange = function() {
+      ispixel = ispixel ? 0 : 1;
+      set();
+    };
+    iytid.onchange = function() {
+      ytid = this.value;
+      getplayer();
+      if (ytplayer) ytplayer.loadVideoById(ytid);
+      set();
+    };
+    irestart.onclick = function() {
+      getplayer();
+      if (ytplayer) ytplayer.seekTo(0);
+    };
+    ipause.onclick = function() {
+      getplayer();
+      if (!ytplayer) return;
+      if (ytplayer.getPlayerState() === 2) {
+        ytplayer.playVideo();
+      } else {
+        ytplayer.pauseVideo();
+      }
+    };
+    for (var p in types) {
+      var o = document.createElement('option');
+      o.text = p;
+      o.value = p;
+      itype.add(o);
+    }
+    if (location.hash && location.hash.length >= 10) {
+      fromhash(location.hash.substring(1));
+    }
+    getplayer();
+    set();
+  };
+  window.onYouTubeIframeAPIReady = function() {
+    ytready = true;
   };
   var types = {
     'parrot': 10,
@@ -183,22 +215,9 @@
     'upvotepartyparrot': 10,
     'witnessprotectionparrot': 10,
   };
-  var begin = function() {
-    for (var p in types) {
-      var o = document.createElement('option');
-      o.text = p;
-      o.value = p;
-      itype.add(o);
-    }
-    if (location.hash && location.hash.length >= 10) {
-      fromhash(location.hash.substring(1));
-    }
-    if (ytplayer) ytplayer.loadVideoById(ytid);
-    set();
-  };
   istart.onclick = function() {
     ctl.style.display = 'block';
     istart.style.display = 'none';
-    begin();
+    init();
   };
 })();
