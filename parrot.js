@@ -1,14 +1,14 @@
 (function() {
-  var type = 'parrot';
+  var type = 'partyparrot';
   var nframes = 10;
   var curframe = 0;
-  var bpm = 114.9;
+  var bpm = 139.2;
   var ispixel = 1;
-  var isrepeat = 1;
+  var isrepeat = 0;
   var timer = null;
   var tap0 = null;
   var tapc = 0;
-  var ytid = '-PKV79lug54';
+  var ytid = 'v5RQKqcJSOg';
   var dparrot = document.getElementById('parrot');
   var ibpm = document.getElementById('bpm');
   var itype = document.getElementById('type');
@@ -16,6 +16,8 @@
   var ipix = document.getElementById('pixelate');
   var iytid = document.getElementById('ytid');
   var irestart = document.getElementById('restart');
+  var istart = document.getElementById('start');
+  var ctl = document.getElementById('ctl');
   var ytplayer = null;
   var anim = function() {
     curframe = (curframe + 1) % nframes;
@@ -181,14 +183,22 @@
     'upvotepartyparrot': 10,
     'witnessprotectionparrot': 10,
   };
-  for (var p in types) {
-    var o = document.createElement('option');
-    o.text = p;
-    o.value = p;
-    itype.add(o);
-  }
-  if (location.hash && location.hash.length >= 10) {
-    fromhash(location.hash.substring(1));
-  }
-  set();
+  var begin = function() {
+    for (var p in types) {
+      var o = document.createElement('option');
+      o.text = p;
+      o.value = p;
+      itype.add(o);
+    }
+    if (location.hash && location.hash.length >= 10) {
+      fromhash(location.hash.substring(1));
+    }
+    if (ytplayer) ytplayer.loadVideoById(ytid);
+    set();
+  };
+  istart.onclick = function() {
+    ctl.style.display = 'block';
+    istart.style.display = 'none';
+    begin();
+  };
 })();

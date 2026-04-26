@@ -6,6 +6,7 @@ body {
 #ctl {
   position: absolute;
   background-color: #fff;
+  display: none;
 }
 tr td:first-child {
   text-align: right;
